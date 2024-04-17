@@ -40,6 +40,7 @@ function handelSubmit(event) {
 
     requestPictures(search.value)
         .then(boxFoto => {
+            gallery.innerHTML = creatMarkup(boxFoto.hits)
             if (boxFoto.total === 0) {
                 iziToast.show({
                     title: 'error',
@@ -52,12 +53,13 @@ function handelSubmit(event) {
                     position: 'topCenter',
                     timeout: '2000',
                 });
-                event.currentTarget.reset()
-        return;
+                gallery.reset()
+                return;
+                
       }
-      gallery.innerHTML = creatMarkup(boxFoto.hits)
-      
         })
+        
+
          .catch(Error => iziToast.show({
              title: 'error',
              titleColor: 'white',
