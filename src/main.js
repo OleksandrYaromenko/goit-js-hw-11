@@ -13,14 +13,23 @@ import { creatMarkup } from "./js/render-functions";
 
 const form = document.querySelector(".search-form")
 const gallery = document.querySelector(".gallery")
+const loader = document.querySelector('.loader')
 
 
 
 form.addEventListener("submit", handelSubmit)
+loader.style.display = 'none';
+
+
+const simpleLightbox = new SimpleLightbox('.gallery a', {
+  captionsData: 'alt',
+  captionDelay: 250,
+});
 
 
 function handelSubmit(event) {
     event.preventDefault();
+    loader.style.display = 'inline-block';
 
     const { search } = event.currentTarget.elements;
 
@@ -37,10 +46,13 @@ function handelSubmit(event) {
       return
        
     }
+    
 
     requestPictures(search.value)
         .then(boxFoto => {
+            loader.style.display = 'none';
             gallery.innerHTML = creatMarkup(boxFoto.hits)
+            simpleLightbox.refresh()
             if (boxFoto.total === 0) {
                 iziToast.show({
                     title: 'error',
@@ -53,7 +65,7 @@ function handelSubmit(event) {
                     position: 'topCenter',
                     timeout: '2000',
                 });
-                gallery.reset()
+                form.reset()
                 return;
                 
       }
@@ -70,6 +82,12 @@ function handelSubmit(event) {
              position: 'topCenter',
              timeout: '2000',  
 
-    }))
+         })
+             .finally(() => {
+      loader.style.display = 'none';;
+    })
+    )
+      
+    
 }
 
